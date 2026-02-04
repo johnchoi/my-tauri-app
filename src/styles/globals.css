@@ -1,0 +1,66 @@
+:root {
+  /* Light Mode Defaults */
+  --color-background: #f8fafc; /* Slate 50 */
+  --color-surface: #ffffff; /* White */
+  --color-surface-highlight: #e2e8f0; /* Slate 200 */
+  --color-primary: #3b82f6; /* Blue 500 */
+  --color-primary-hover: #2563eb; /* Blue 600 */
+  --color-text: #0f172a; /* Slate 900 */
+  --color-text-muted: #64748b; /* Slate 500 */
+  --color-danger: #ef4444;
+  --color-success: #22c55e;
+}
+
+.dark {
+  /* Dark Mode Overrides */
+  --color-background: #0f172a; /* Slate 900 */
+  --color-surface: #1e293b; /* Slate 800 */
+  --color-surface-highlight: #334155; /* Slate 700 */
+  --color-primary: #3b82f6; /* Blue 500 */
+  --color-primary-hover: #2563eb; /* Blue 600 */
+  --color-text: #f8fafc; /* Slate 50 */
+  --color-text-muted: #94a3b8; /* Slate 400 */
+  --color-danger: #ef4444;
+  --color-success: #22c55e;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--color-background);
+  transition: background-color 300ms ease-in-out;
+}
+
+/* Add smooth color transitions to all elements for theme switching */
+*,
+*::before,
+*::after {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: ease-in-out;
+  transition-duration: 300ms;
+}
+
+/* Disable color transitions for animated elements to avoid conflicts */
+.animate-pulse,
+.animate-spin,
+.animate-bounce {
+  transition-property: none !important;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+  transition: background-color 300ms ease-in-out;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-highlight);
+  border-radius: 4px;
+  transition: background-color 300ms ease-in-out;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}

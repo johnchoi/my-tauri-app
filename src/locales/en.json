@@ -1,0 +1,13 @@
+{
+  "app": {
+    "title": "Tauri App",
+    "subtitle": "Built with React + TypeScript"
+  },
+  "example": {
+    "enterName": "Enter your name",
+    "greet": "Greet"
+  },
+  "common": {
+    "loading": "Loading…"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "app": {
+    "title": "Tauri 应用",
+    "subtitle": "基于 React + TypeScript 构建"
+  },
+  "example": {
+    "enterName": "输入你的名字",
+    "greet": "问候"
+  },
+  "common": {
+    "loading": "加载中…"
+  }
+}

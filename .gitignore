@@ -1,0 +1,21 @@
+node_modules/
+dist/
+build/
+coverage/
+
+# Rust/Tauri
+src-tauri/target/
+*.rs.bk
+
+# OS/editor
+.DS_Store
+Thumbs.db
+*.swp
+*.tmp
+
+# Secrets
+.env*
+
+# IDE
+.vscode/
+.idea/
