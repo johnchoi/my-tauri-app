@@ -140,7 +140,7 @@ npm install
 ### 方式 2：使用 degit
 
 ```bash
-npx degit <your-username/repo-name> my-awesome-app
+npx degit johnchoi/my-tauri-app my-awesome-app
 cd my-awesome-app
 npm install
 ```
