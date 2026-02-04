@@ -9,10 +9,10 @@
 ## User Scenarios & Testing *(mandatory)*
 
 <!--
-  Constitution alignment (marketing-hub):
+  Constitution alignment (Tauri + React + TypeScript Template):
   - 每个用户故事必须可独立验证（给出明确的验证步骤/命令）。
-  - 若涉及跨项目影响或依赖变化：在 Requirements 或 Edge Cases 中明确，并在计划阶段补充影响说明。
-  - Backend 项目要求：如果功能涉及 backend，需求必须能映射到 DDD 分层（Domain/Application/Infrastructure/Interfaces），遵循标准目录结构（见宪章 1.4.0），避免跨层耦合。Domain 层禁止依赖框架，必须使用标准文件命名（entities.py、repository.py、commands.py、queries.py、handlers.py、dtos.py、model.py）。
+  - 若涉及 UI / Rust command / Tauri / plugin / 权限与安全策略变更：在 Requirements 或 Edge Cases 中明确，并在计划阶段补充影响说明与回滚方案。
+  - 跨边界契约：若新增/变更 Tauri command（invoke 契约），需求必须包含参数/返回值与错误场景，并能映射到对应的前端与 Rust 测试。
   - TDD 纪律（NON-NEGOTIABLE）：每个用户故事必须先定义测试场景（Acceptance Scenarios），实现时必须先编写测试用例并确保测试失败（Red），再实现功能使测试通过（Green），最后重构优化（Refactor）。测试必须验证业务行为而非实现细节。
 -->
 

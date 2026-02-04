@@ -28,17 +28,12 @@ description: "Task list template for feature implementation"
 
 ## Path Conventions
 
-- **Single project**: `src/`, `tests/` at repository root
-- **Web app (DDD structure)**:
-  - Domain: `backend/app/domain/<domain>/entities.py`, `repository.py`, `value_objects.py`, `services.py`
-  - Application: `backend/app/application/<domain>/commands.py`, `queries.py`, `handlers.py`, `dtos.py`
-  - Infrastructure: `backend/app/infrastructure/persistence/<domain>/model.py`, `repository.py`
-  - Interfaces: `backend/app/interfaces/api/v1/auth/`, `schemas/`
-  - Tests: `backend/tests/unit/`, `integration/`, `contract/`
-  - Frontend: `frontend/src/components/`, `pages/`, `services/`
-- **Mobile**: `api/src/`, `ios/src/` or `android/src/`
-- Paths shown below assume single project - adjust based on plan.md structure
-- **DDD 文件命名规范**: 必须遵循宪章 1.4.0 定义的标准文件名（entities.py、repository.py、commands.py、queries.py、handlers.py、dtos.py、model.py）
+- **Tauri app (this repo)**:
+  - Frontend (React + TS): `src/`
+  - Frontend tests: `tests/`
+  - Rust backend (Tauri): `src-tauri/src/`
+  - Rust config: `src-tauri/tauri.conf.json`, `src-tauri/Cargo.toml`
+- Paths shown below assume this repo structure - adjust based on plan.md structure
 
 <!-- 
   ============================================================================
@@ -77,12 +72,12 @@ description: "Task list template for feature implementation"
 
 Examples of foundational tasks (adjust based on your project):
 
-- [ ] T004 Setup database schema and migrations framework
-- [ ] T005 [P] Implement authentication/authorization framework
-- [ ] T006 [P] Setup API routing and middleware structure
-- [ ] T007 Create base models/entities that all stories depend on
-- [ ] T008 Configure error handling and logging infrastructure
-- [ ] T009 Setup environment configuration management
+- [ ] T004 Define Tauri command contracts (name, params, return, errors)
+- [ ] T005 [P] Implement input validation at boundaries (UI + Rust)
+- [ ] T006 [P] Configure error mapping (Rust Result → UI-friendly errors)
+- [ ] T007 [P] Configure logging/telemetry strategy (no sensitive data)
+- [ ] T008 Confirm Tauri security posture changes (e.g., CSP, allowlists)
+- [ ] T009 Setup environment configuration management (dev/prod)
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -104,50 +99,49 @@ Examples of foundational tasks (adjust based on your project):
 > 3. 🔵 Refactor: Improve code while keeping tests GREEN
 
 **Test Coverage Requirements**:
-- Unit tests for Domain layer business logic (MUST cover ≥ 80%)
-- Integration tests for Application layer use cases
-- Contract tests for API endpoints (Happy Path + Error Cases)
-- E2E test for critical user journey
+- Frontend unit/integration tests via Vitest (critical paths covered)
+- Contract-style tests for Tauri command invoke interfaces (Happy Path + Error Cases)
+- Rust unit tests for command logic where applicable
+- E2E tests when a user journey spans UI → invoke → side-effect
 
-- [ ] T010 [P] [US1] **UNIT TEST** for [Domain Entity/ValueObject/Service] in tests/unit/test_[name].py
-  - Test business rules and domain logic
-  - Mock all external dependencies
-  - **VERIFY TEST FAILS** before proceeding to T012-T013
-- [ ] T011 [P] [US1] **CONTRACT TEST** for [API endpoint] in tests/contract/test_[name].py
-  - Test request/response format, status codes, error handling
-  - **VERIFY TEST FAILS** before proceeding to T015
-- [ ] T012 [P] [US1] **INTEGRATION TEST** for [use case workflow] in tests/integration/test_[name].py
-  - Test cross-layer collaboration (Application → Domain → Infrastructure)
-  - Use real database/services (test containers)
-  - **VERIFY TEST FAILS** before proceeding to T014
-- [ ] T013 [P] [US1] **E2E TEST** for [user journey] in tests/e2e/test_[name].py
-  - Test complete user flow from entry to data persistence
+- [ ] T010 [P] [US1] **FRONTEND TEST** for [component/hook] in tests/test_[name].tsx
+  - Test user-visible behavior (Testing Library)
+  - Mock invoke side-effects
+  - **VERIFY TEST FAILS** before proceeding to implementation tasks
+- [ ] T011 [P] [US1] **CONTRACT TEST** for [Tauri command] in tests/test_[name].ts
+  - Test invoke name, params, return shape, error mapping
+  - **VERIFY TEST FAILS** before proceeding to implementation tasks
+- [ ] T012 [P] [US1] **RUST TEST** for [command logic] in src-tauri/src/[module].rs
+  - Test core logic and error cases
+  - **VERIFY TEST FAILS** before proceeding to implementation tasks
+- [ ] T013 [P] [US1] **E2E TEST** for [user journey] (optional) in tests/e2e/test_[name].ts
+  - Test UI → invoke → side-effect
   - **VERIFY TEST FAILS** before proceeding to implementation
 
 ### Implementation for User Story 1
 
 > **PREREQUISITE**: All tests above (T010-T013) MUST be written and FAILING before starting implementation
 
-- [ ] T014 [P] [US1] Create [Entity1] model in src/models/[entity1].py
-  - **After implementation**: Run T010 unit test → Should turn GREEN 🟢
-- [ ] T015 [P] [US1] Create [Entity2] model in src/models/[entity2].py
-  - **After implementation**: Run T010 unit test → Should turn GREEN 🟢
-- [ ] T016 [US1] Implement [Service] in src/services/[service].py (depends on T014, T015)
-  - **After implementation**: Run T012 integration test → Should turn GREEN 🟢
-- [ ] T017 [US1] Implement [endpoint/feature] in src/[location]/[file].py
-  - **After implementation**: Run T011 contract test → Should turn GREEN 🟢
-- [ ] T018 [US1] Add validation and error handling
-  - **After implementation**: Run all error case tests → Should turn GREEN 🟢
-- [ ] T019 [US1] Add logging for user story 1 operations
-- [ ] T020 [US1] **REFACTOR** code while keeping all tests GREEN 🔵
+- [ ] T014 [P] [US1] Implement frontend state and UI in src/[location]/[file].tsx
+  - **After implementation**: Run T010 frontend test → Should turn GREEN
+- [ ] T015 [P] [US1] Implement invoke client wrapper in src/services/[service].ts
+  - **After implementation**: Run T011 contract test → Should turn GREEN
+- [ ] T016 [US1] Implement Rust command in src-tauri/src/[module].rs and register in src-tauri/src/lib.rs
+  - **After implementation**: Run T012 Rust test → Should turn GREEN
+- [ ] T017 [US1] Wire UI ↔ command integration and error mapping
+  - **After implementation**: Run T010 + T011 (+ optional T013)
+- [ ] T018 [US1] Add validation and user-friendly error messages at boundaries
+  - **After implementation**: Run all error case tests → Should turn GREEN
+- [ ] T019 [US1] Add minimal observability (no secrets) for debugging failures
+- [ ] T020 [US1] **REFACTOR** while keeping all tests GREEN
   - Improve code structure, naming, and readability
-  - **CRITICAL**: All tests MUST remain GREEN during refactoring
 
 **Checkpoint**: At this point:
 - ✅ All tests (T010-T013) should be GREEN 🟢
 - ✅ User Story 1 should be fully functional and testable independently
-- ✅ Run full test suite: `pytest tests/ -v --cov=src --cov-report=term`
-- ✅ Verify Domain layer coverage ≥ 80%
+- ✅ Run frontend tests: `npm test`
+- ✅ Run frontend coverage: `npm run test:coverage`
+- ✅ Run Rust tests: `cargo test --manifest-path src-tauri/Cargo.toml`
 
 ---
 
@@ -159,30 +153,33 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Tests for User Story 2 (TDD REQUIRED - MUST be written FIRST) 🔴
 
-- [ ] T021 [P] [US2] **UNIT TEST** for [Domain logic] in tests/unit/test_[name].py
+- [ ] T021 [P] [US2] **FRONTEND TEST** for [component/hook] in tests/test_[name].tsx
+  - Test user-visible behavior (Testing Library)
   - **VERIFY TEST FAILS** before proceeding to implementation
-- [ ] T022 [P] [US2] **CONTRACT TEST** for [API endpoint] in tests/contract/test_[name].py
+- [ ] T022 [P] [US2] **CONTRACT TEST** for [Tauri command] in tests/test_[name].ts
+  - Test invoke name, params, return shape, error mapping
   - **VERIFY TEST FAILS** before proceeding to implementation
-- [ ] T023 [P] [US2] **INTEGRATION TEST** for [use case] in tests/integration/test_[name].py
+- [ ] T023 [P] [US2] **RUST TEST** for [command logic] in src-tauri/src/[module].rs
+  - Test error cases and edge conditions
   - **VERIFY TEST FAILS** before proceeding to implementation
 
 ### Implementation for User Story 2
 
 > **PREREQUISITE**: All tests above (T021-T023) MUST be written and FAILING before starting implementation
 
-- [ ] T024 [P] [US2] Create [Entity] model in src/models/[entity].py
-  - **After implementation**: Run T021 → Should turn GREEN 🟢
-- [ ] T025 [US2] Implement [Service] in src/services/[service].py
-  - **After implementation**: Run T023 → Should turn GREEN 🟢
-- [ ] T026 [US2] Implement [endpoint/feature] in src/[location]/[file].py
-  - **After implementation**: Run T022 → Should turn GREEN 🟢
-- [ ] T027 [US2] Integrate with User Story 1 components (if needed)
-- [ ] T028 [US2] **REFACTOR** code while keeping all tests GREEN 🔵
+- [ ] T024 [P] [US2] Implement frontend UI slice in src/[location]/[file].tsx
+  - **After implementation**: Run T021 → Should turn GREEN
+- [ ] T025 [P] [US2] Implement invoke client wrapper in src/services/[service].ts
+  - **After implementation**: Run T022 → Should turn GREEN
+- [ ] T026 [US2] Implement Rust command + registration in src-tauri/src/[module].rs and src-tauri/src/lib.rs
+  - **After implementation**: Run T023 → Should turn GREEN
+- [ ] T027 [US2] Wire UI ↔ command integration and error mapping
+- [ ] T028 [US2] **REFACTOR** while keeping all tests GREEN
 
 **Checkpoint**: At this point:
 - ✅ All tests for User Stories 1 AND 2 should be GREEN 🟢
 - ✅ Both stories should work independently
-- ✅ Verify test coverage remains ≥ 80% for Domain layer
+- ✅ Verify key user paths covered, and run: `npm test` + `cargo test --manifest-path src-tauri/Cargo.toml`
 
 ---
 
@@ -194,24 +191,27 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Tests for User Story 3 (TDD REQUIRED - MUST be written FIRST) 🔴
 
-- [ ] T029 [P] [US3] **UNIT TEST** for [Domain logic] in tests/unit/test_[name].py
+- [ ] T029 [P] [US3] **FRONTEND TEST** for [component/hook] in tests/test_[name].tsx
+  - Test user-visible behavior (Testing Library)
   - **VERIFY TEST FAILS** before proceeding to implementation
-- [ ] T030 [P] [US3] **CONTRACT TEST** for [API endpoint] in tests/contract/test_[name].py
+- [ ] T030 [P] [US3] **CONTRACT TEST** for [Tauri command] in tests/test_[name].ts
+  - Test invoke name, params, return shape, error mapping
   - **VERIFY TEST FAILS** before proceeding to implementation
-- [ ] T031 [P] [US3] **INTEGRATION TEST** for [use case] in tests/integration/test_[name].py
+- [ ] T031 [P] [US3] **RUST TEST** for [command logic] in src-tauri/src/[module].rs
+  - Test error cases and edge conditions
   - **VERIFY TEST FAILS** before proceeding to implementation
 
 ### Implementation for User Story 3
 
 > **PREREQUISITE**: All tests above (T029-T031) MUST be written and FAILING before starting implementation
 
-- [ ] T032 [P] [US3] Create [Entity] model in src/models/[entity].py
-  - **After implementation**: Run T029 → Should turn GREEN 🟢
-- [ ] T033 [US3] Implement [Service] in src/services/[service].py
-  - **After implementation**: Run T031 → Should turn GREEN 🟢
-- [ ] T034 [US3] Implement [endpoint/feature] in src/[location]/[file].py
-  - **After implementation**: Run T030 → Should turn GREEN 🟢
-- [ ] T035 [US3] **REFACTOR** code while keeping all tests GREEN 🔵
+- [ ] T032 [P] [US3] Implement frontend UI slice in src/[location]/[file].tsx
+  - **After implementation**: Run T029 → Should turn GREEN
+- [ ] T033 [P] [US3] Implement invoke client wrapper in src/services/[service].ts
+  - **After implementation**: Run T030 → Should turn GREEN
+- [ ] T034 [US3] Implement Rust command + registration in src-tauri/src/[module].rs and src-tauri/src/lib.rs
+  - **After implementation**: Run T031 → Should turn GREEN
+- [ ] T035 [US3] **REFACTOR** while keeping all tests GREEN
 
 **Checkpoint**: All user stories should now be independently functional with all tests GREEN 🟢
 
@@ -228,32 +228,24 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX [P] Documentation updates in docs/
 - [ ] TXXX Code cleanup and refactoring (while keeping all tests GREEN 🟢)
 - [ ] TXXX Performance optimization across all stories
-- [ ] TXXX [P] Additional unit tests for edge cases (if needed) in tests/unit/
+- [ ] TXXX [P] Additional frontend tests for edge cases (if needed) in tests/
 - [ ] TXXX Security hardening
 - [ ] TXXX Run quickstart.md validation
-- [ ] TXXX **FINAL TDD CHECK**: Verify all tests GREEN 🟢, coverage ≥ 80% for Domain layer
+- [ ] TXXX **FINAL TDD CHECK**: Verify all tests GREEN (`npm test`, `cargo test --manifest-path src-tauri/Cargo.toml`) and critical paths covered
 
 ---
 
 ## Constitution Gates (must hold)
 
-- Each task set MUST identify impacted subprojects and include validation commands.
-- If any task changes cross-project dependencies, include companion tasks to update:
-  - `docs/monorepo/dependencies.md`
-  - `docs/monorepo/templates/impact-report.md` (fill an impact report alongside the change)
-  - `docs/monorepo/dependency-conflicts.yaml` (if conflicts/cycles suspected)
-- **Backend DDD Architecture Gates** (Backend 专属):
-  - Backend tasks MUST be organized by DDD layer (Domain → Application → Infrastructure → Presentation → Bootstrap)
-  - Domain layer tasks MUST NOT introduce framework dependencies
-  - Repository interfaces MUST be defined in Domain layer, implementations in Infrastructure layer
-  - Application layer tasks MUST only orchestrate use cases, not contain business rules
-  - Each backend implementation task MUST include DDD layer self-check validation
+- Each task set MUST identify impacted areas (`src/`, `tests/`, `src-tauri/`) and include validation commands.
+- **Security-by-default gates** (Tauri):
+  - Any change involving Shell/file/network MUST document input validation and allowlist decisions
+  - Errors MUST not leak sensitive data
 - **TDD Gates** (NON-NEGOTIABLE):
   - Test tasks MUST precede implementation tasks for each user story
   - All tests MUST be verified to FAIL (🔴 Red) before implementation begins
   - Implementation tasks MUST verify tests turn GREEN (🟢) after completion
   - Refactoring tasks MUST keep all tests GREEN (🔵 Refactor)
-  - Final checkpoint MUST verify Domain layer test coverage ≥ 80%
   - Test naming MUST follow `test_<行为>_when_<条件>_then_<预期结果>` pattern
 
 ## Dependencies & Execution Order
@@ -275,10 +267,9 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Within Each User Story
 
-- Tests (if included) MUST be written and FAIL before implementation
-- Models before services
-- Services before endpoints
-- Core implementation before integration
+- Tests MUST be written and verified to FAIL before implementation
+- UI before integration wiring (or in small vertical slices)
+- Command contract before side-effect implementation
 - Story complete before moving to next priority
 
 ### Parallel Opportunities
@@ -295,13 +286,15 @@ Examples of foundational tasks (adjust based on your project):
 ## Parallel Example: User Story 1
 
 ```bash
-# Launch all tests for User Story 1 together (if tests requested):
-Task: "Contract test for [endpoint] in tests/contract/test_[name].py"
-Task: "Integration test for [user journey] in tests/integration/test_[name].py"
+# Launch key tests for User Story 1 together (if tests requested):
+Task: "Frontend test for [component/hook] in tests/test_[name].tsx"
+Task: "Contract test for [Tauri command] in tests/test_[name].ts"
+Task: "Rust test for [command logic] in src-tauri/src/[module].rs"
 
-# Launch all models for User Story 1 together:
-Task: "Create [Entity1] model in src/models/[entity1].py"
-Task: "Create [Entity2] model in src/models/[entity2].py"
+# Launch parallel implementation slices:
+Task: "Implement UI slice in src/[location]/[file].tsx"
+Task: "Implement invoke wrapper in src/services/[service].ts"
+Task: "Implement Rust command in src-tauri/src/[module].rs"
 ```
 
 ---

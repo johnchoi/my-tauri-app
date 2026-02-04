@@ -20,7 +20,7 @@
 **Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
 **Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
 **Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
+**Testing**: [e.g., Vitest, Testing Library, cargo test or NEEDS CLARIFICATION]
 **Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
 **Project Type**: [single/web/mobile - determines source structure]  
 **Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
@@ -31,13 +31,12 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-- ✅ 边界与责任：方案是否只改动本子项目内实现？若跨项目，是否明确公开接口/契约与负责人评审？
-- ✅ 影响说明（Impact-First）：是否在计划中写明影响子项目、依赖变化、风险与回滚？
-- ✅ 可独立验证：是否给出可复现的验证命令（优先 `scripts/monorepo/run-checks.sh <project>` 或对应 `pytest` 等）？
-- ✅ 依赖纪律：若新增/变更依赖，是否同步更新 `docs/monorepo/dependencies.md`（必要时登记冲突）？
+- ✅ 边界与责任：是否明确 UI（`src/`）与 Rust（`src-tauri/`）的职责边界？跨边界通过 Tauri command 契约完成，是否可追踪、可测试？
+- ✅ 安全默认：是否涉及 Shell/文件系统/网络等系统能力？若是，是否采用白名单与参数数组调用，并明确权限与风险？
+- ✅ 影响说明（Impact-First）：是否在计划中写明对前端/后端/配置（如 `src-tauri/tauri.conf.json`）的影响、风险与回滚？
+- ✅ 可独立验证：是否给出可复现的验证命令（按改动选择 `npm test`/`npm run test:coverage`/`cargo test --manifest-path src-tauri/Cargo.toml`/`npm run tauri build`）？
 - ✅ 最小流程与门禁：是否避免无关重构混入，且门禁可自动执行？
-- ✅ DDD 架构纪律（Backend 专属）：若涉及 backend 项目，是否按 DDD 分层设计（Domain/Application/Infrastructure/Interfaces）？是否遵循标准目录结构（见宪章 1.4.0）？是否确保依赖方向正确（由外向内）？是否避免领域层依赖框架？是否遵循文件命名规范（entities.py、repository.py、commands.py、queries.py、handlers.py、dtos.py、model.py）？
-- ✅ TDD 纪律（NON-NEGOTIABLE）：是否计划先编写测试再实现功能代码？是否明确测试分层策略（单元/集成/契约/端到端）？是否设定测试覆盖率目标（Domain 层 ≥ 80%）？
+- ✅ TDD 纪律（NON-NEGOTIABLE）：是否计划先编写测试再实现功能代码？是否明确前端（Vitest）与 Rust（cargo test）的测试分层与覆盖目标？
 
 ## Project Structure
 
